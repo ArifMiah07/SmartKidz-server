@@ -83,6 +83,7 @@ async function run() {
         const bookingCollection = client.db('carDoctor').collection('bookingsData');
         const aboutUsCollection = client.db('carDoctor').collection('aboutUs');
         const aboutClassesCollection = client.db('carDoctor').collection('aboutClasses');
+        const aboutCoursesCollection = client.db('carDoctor').collection('aboutCourses');
 
         // auth related api
         app.post('/jwt', logger, async (req, res) => {
@@ -111,12 +112,22 @@ async function run() {
             res.send(result);
         })
         
-        //
+        //classes
         app.get('/about-classes', async (req, res)=>{
             const cursor = aboutClassesCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+        //Courses api
+        app.get('/about-courses', async (req, res)=>{
+            const cursor = aboutCoursesCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        
+
+        
 
         // services related api
         app.get('/services', logger, async (req, res) => {
