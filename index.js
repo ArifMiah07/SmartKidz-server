@@ -85,6 +85,7 @@ async function run() {
         const aboutClassesCollection = client.db('carDoctor').collection('aboutClasses');
         const aboutCoursesCollection = client.db('carDoctor').collection('aboutCourses');
         const categoryCollection = client.db('carDoctor').collection('category');
+        const eventsCollection = client.db('carDoctor').collection('events');
 
         // auth related api
         app.post('/jwt', logger, async (req, res) => {
@@ -129,6 +130,12 @@ async function run() {
         //category api
         app.get('/category', async (req, res)=>{
             const cursor = categoryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+        //events api
+        app.get('/events', async (req, res)=>{
+            const cursor = eventsCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
