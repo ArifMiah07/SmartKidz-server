@@ -87,6 +87,7 @@ async function run() {
         const categoryCollection = client.db('carDoctor').collection('category');
         const eventsCollection = client.db('carDoctor').collection('events');
         const addedServiceCollection = client.db('carDoctor').collection('addService');
+        const bookingsCollection = client.db('carDoctor').collection('bookings');
 
         // auth related api
         app.post('/jwt', logger, async (req, res) => {
@@ -144,6 +145,26 @@ async function run() {
         
 
         
+        //add service api
+        app.post('/add-service', async (req, res) => {
+            const booking = req.body;
+            console.log(booking);
+            const result = await addedServiceCollection.insertOne(booking);
+            res.send(result);
+        });
+
+        app.get('/add-services/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+
+            const options = {
+                // Include only the `title` and `imdb` fields in the returned document
+                projection: { title: 1, price: 1, service_id: 1, img: 1 },
+            };
+
+            const result = await serviceCollection.findOne(query, options);
+            res.send(result);
+        })
 
         // services related api
         app.get('/services', logger, async (req, res) => {
@@ -165,6 +186,14 @@ async function run() {
             res.send(result);
         })
 
+        //service booking  api
+        app.post('/bookings', async (req, res) => {
+            const bookings = req.body;
+            console.log(bookings);
+            const result = await bookingsCollection.insertOne(bookings);
+            res.send(result);
+        });
+
 
         // bookings 
         app.get('/bookings', logger, verifyToken, async (req, res) => {
@@ -182,22 +211,15 @@ async function run() {
             const result = await bookingCollection.find(query).toArray();
             res.send(result);
         })
-        //add service api
-        app.post('/add-service', async (req, res) => {
-            const booking = req.body;
-            console.log(booking);
-            const result = await addedServiceCollection.insertOne(booking);
-            res.send(result);
-        });
-        app.post('/bookings', async (req, res) => {
-            try {
-              const booking = new Booking(req.body);
-              await booking.save();
-              res.status(201).send(booking);
-            } catch (error) {
-              res.status(400).send(error);
-            }
-          });
+        // app.post('/bookings', async (req, res) => {
+        //     try {
+        //       const booking = new Booking(req.body);
+        //       await booking.save();
+        //       res.status(201).send(booking);
+        //     } catch (error) {
+        //       res.status(400).send(error);
+        //     }
+        //   });
 
         app.patch('/bookings/:id', async (req, res) => {
             const id = req.params.id;
