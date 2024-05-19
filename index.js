@@ -86,6 +86,7 @@ async function run() {
         const aboutCoursesCollection = client.db('carDoctor').collection('aboutCourses');
         const categoryCollection = client.db('carDoctor').collection('category');
         const eventsCollection = client.db('carDoctor').collection('events');
+        const addedServiceCollection = client.db('carDoctor').collection('addService');
 
         // auth related api
         app.post('/jwt', logger, async (req, res) => {
@@ -100,7 +101,6 @@ async function run() {
         })
 
         //logout
-
         app.post('/logout', async(req, res)=>{
             const user = req.body;
             console.log('logging out user: ', user)
@@ -182,13 +182,22 @@ async function run() {
             const result = await bookingCollection.find(query).toArray();
             res.send(result);
         })
-
-        app.post('/bookings', async (req, res) => {
+        //add service api
+        app.post('/add-service', async (req, res) => {
             const booking = req.body;
             console.log(booking);
-            const result = await bookingCollection.insertOne(booking);
+            const result = await addedServiceCollection.insertOne(booking);
             res.send(result);
         });
+        app.post('/bookings', async (req, res) => {
+            try {
+              const booking = new Booking(req.body);
+              await booking.save();
+              res.status(201).send(booking);
+            } catch (error) {
+              res.status(400).send(error);
+            }
+          });
 
         app.patch('/bookings/:id', async (req, res) => {
             const id = req.params.id;
