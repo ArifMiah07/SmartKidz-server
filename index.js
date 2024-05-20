@@ -24,8 +24,8 @@ app.use(
 app.use(
     cors({
         origin: [
-            'https://cars-doctor-a5cb1.web.app', 
-            'https://cars-doctor-a5cb1.firebaseapp.com',
+            'https://smart-kidz-95c4e.web.app', 
+            'https://smart-kidz-95c4e.firebaseapp.com',
             'http://localhost:5173', 'http://localhost:5174'
         ],
     credentials: true
@@ -88,6 +88,7 @@ async function run() {
         const eventsCollection = client.db('carDoctor').collection('events');
         const addedServiceCollection = client.db('carDoctor').collection('addService');
         const bookingsCollection = client.db('carDoctor').collection('bookings');
+        const serviceProviderInfoCollection = client.db('carDoctor').collection('ProviderInfo');
 
         // auth related api
         app.post('/jwt', logger, async (req, res) => {
@@ -140,6 +141,15 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        //serviceProviderInfoCollection api
+        //service booking  api
+        app.post('/serviceProviderInfo', async (req, res) => {
+            const provider = req.body;
+            console.log(provider);
+            const result = await serviceProviderInfoCollection.insertOne(provider);
+            res.send(result);
+        });
+
 
 
         
