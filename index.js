@@ -13,7 +13,7 @@ app.use(
         origin: [
             'https://smart-kidz-95c4e.web.app', 
             'https://smart-kidz-95c4e.firebaseapp.com',
-            'http://localhost:5173', 'http://localhost:5174'
+            // 'http://localhost:5173', 'http://localhost:5174'
         ],
     credentials: true
 }));
