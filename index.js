@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-console.log(process.env.DB_PASS)
+// console.log(process.env.DB_PASS)
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fovwt3b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -66,8 +66,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
 
-        // const serviceCollection = client.db('carDoctor').collection('services');
-        // const bookingCollection = client.db('carDoctor').collection('bookingsData');
+
         const aboutUsCollection = client.db('carDoctor').collection('aboutUs');
         const aboutClassesCollection = client.db('carDoctor').collection('aboutClasses');
         const aboutCoursesCollection = client.db('carDoctor').collection('aboutCourses');
@@ -142,9 +141,6 @@ async function run() {
         })
 
 
-
-
-
         //serviceProviderInfoCollection api
         // serviceProviderInfo  api
         app.post('/serviceProviderInfo', async (req, res) => {
@@ -153,26 +149,28 @@ async function run() {
             const result = await serviceProviderInfoCollection.insertOne(provider);
             res.send(result);
         });
-
-        app.get('/serviceProviderInfo', logger, verifyToken, async(req, res)=>{
-            console.log(req.query.email);
-            console.log('ttttt token', req.cookies.token)
-            console.log('user in the valid token', req.user)
-            if(req.query.email !== req.user.email){
-                return res.status(403).send({message: 'forbidden access'})
-            }
-            
-            let query = {};
-            if (req.query?.email) {
-                query = { email: req.query.email }
-            }
-            const result = await serviceProviderInfoCollection.find(query).toArray();
+        app.get('/serviceProviderInfo',logger, async (req, res)=>{
+            const cursor = serviceProviderInfoCollection.find();
+            const result = await cursor.toArray();
             res.send(result);
-            // const cursor = serviceProviderInfoCollection.find();
-            // const result = await cursor.toArray();
-            // res.send(result);
-            
         })
+
+        // app.get('/serviceProviderInfo', logger, verifyToken, async(req, res)=>{
+        //     console.log(req.query.email);
+        //     console.log('ttttt token', req.cookies.token)
+        //     console.log('user in the valid token', req.user)
+        //     if(req.query.email !== req.user.email){
+        //         return res.status(403).send({message: 'forbidden access'})
+        //     }
+            
+        //     let query = {};
+        //     if (req.query?.email) {
+        //         query = { email: req.query.email }
+        //     }
+        //     const result = await serviceProviderInfoCollection.find(query).toArray();
+        //     res.send(result);
+            
+        // })
 
 
         
