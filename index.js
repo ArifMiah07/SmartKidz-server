@@ -154,16 +154,30 @@ async function run() {
             res.send(result);
         });
 
-        app.get('/serviceProviderInfo', async(req, res)=>{
-            const cursor = serviceProviderInfoCollection.find();
-            const result = await cursor.toArray();
+        app.get('/serviceProviderInfo', logger, verifyToken, async(req, res)=>{
+            console.log(req.query.email);
+            console.log('ttttt token', req.cookies.token)
+            console.log('user in the valid token', req.user)
+            if(req.query.email !== req.user.email){
+                return res.status(403).send({message: 'forbidden access'})
+            }
+            
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+            const result = await serviceProviderInfoCollection.find(query).toArray();
             res.send(result);
+            // const cursor = serviceProviderInfoCollection.find();
+            // const result = await cursor.toArray();
+            // res.send(result);
             
         })
 
 
         
 
+        //find the added services 
         
         app.get('/add-services', logger, async (req, res) => {
                 const cursor = addedServiceCollection.find();
@@ -226,6 +240,12 @@ async function run() {
             const result = await bookingsCollection.insertOne(bookings);
             res.send(result);
         });
+        //service booking  api
+        app.get('/bookings', logger, async (req, res) => {
+            const cursor = bookingsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+    })
 
 
 
@@ -242,9 +262,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('doctor is running')
+    res.send('Smartkidz is running')
 })
 
 app.listen(port, () => {
-    console.log(`Car Doctor Server is running on port ${port}`)
+    console.log(`Smartkidz Server is running on port ${port}`)
 })
