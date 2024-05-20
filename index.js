@@ -141,8 +141,13 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+
+
+
+
+
         //serviceProviderInfoCollection api
-        //service booking  api
+        // serviceProviderInfo  api
         app.post('/serviceProviderInfo', async (req, res) => {
             const provider = req.body;
             console.log(provider);
@@ -155,26 +160,31 @@ async function run() {
         
 
         
-        //add service api
+        //add a new service api
         app.post('/add-service', async (req, res) => {
             const booking = req.body;
             console.log(booking);
             const result = await addedServiceCollection.insertOne(booking);
             res.send(result);
         });
-
-        app.get('/add-services/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-
-            const options = {
-                // Include only the `title` and `imdb` fields in the returned document
-                projection: { title: 1, price: 1, service_id: 1, img: 1 },
-            };
-
-            const result = await serviceCollection.findOne(query, options);
+        app.get('/add-services', logger, async (req, res) => {
+            const cursor = addedServiceCollection.find();
+            const result = await cursor.toArray();
             res.send(result);
         })
+
+        // app.get('/add-services/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: new ObjectId(id) }
+
+        //     const options = {
+        //         // Include only the `title` and `imdb` fields in the returned document
+        //         projection: { title: 1, price: 1, service_id: 1, img: 1 },
+        //     };
+
+        //     const result = await serviceCollection.findOne(query, options);
+        //     res.send(result);
+        // })
 
         // services related api
         app.get('/services', logger, async (req, res) => {
